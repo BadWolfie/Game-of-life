@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<interface>
+    <menu id="appmenu">
+        <section>
+            <item>
+                <attribute name="label" translatable="yes">Acerca de</attribute>
+                <attribute name="action">app.about</attribute>
+                <attribute name="accel">F1</attribute>
+            </item>
+
+            <item>
+                <attribute name="label" translatable="yes">Salir</attribute>
+                <attribute name="action">app.quit</attribute>
+                <attribute name="accel">&lt;Primary&gt;Q</attribute>
+            </item>
+        </section>
+    </menu>
+</interface>
