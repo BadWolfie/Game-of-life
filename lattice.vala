@@ -20,6 +20,10 @@ public class Lattice : DrawingArea {
 	public const int LATTICE_SIZE = 20;
 	// private LatticeThread[4] threads;
 	private int chance;
+	private int born_min;
+	private int born_max;
+	private int surv_min;
+	private int surv_max;
 
 	private Cell[,] _cells;
 	public Cell[,] cells {
@@ -31,12 +35,21 @@ public class Lattice : DrawingArea {
 		get { return _cells_new; }
 	}
 
-	public Lattice(int chance) {
+	public Lattice(int born_min, 
+				   int born_max, 
+				   int surv_min, 
+				   int surv_max,
+				   int chance) {
 		Object();
 		set_size_request(LATTICE_SIZE,LATTICE_SIZE);
 		draw.connect(paint_grid);
 
 		this.chance = chance;
+		this.born_min = born_min;
+		this.born_max = born_max;
+		this.surv_min = surv_min;
+		this.surv_max = surv_max;
+
 		create_components();
 	}
 
@@ -121,11 +134,11 @@ public class Lattice : DrawingArea {
 
 		switch (current) {
 			case CellState.DEAD:
-				if (alive != 3)
+				if ((alive > born_max) || (alive < born_min))
 					val = CellState.DEAD;
 				break;
 			case CellState.ALIVE:
-				if ((alive > 3) || (alive < 2))
+				if ((alive > surv_max) || (alive < surv_min))
 					val = CellState.DEAD;
 				break;
 		}
