@@ -1,8 +1,15 @@
+/**
+ * @brief [brief description] */
 public enum CellState {
 	DEAD,
 	ALIVE
 }
 
+/**
+ * @brief [brief description]
+ * 
+ * @author Ian Hernández <ihernandezs@openmailbox.org> 
+ */
 public class Cell {
 	private CellState _state;
 	public CellState state {

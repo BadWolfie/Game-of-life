@@ -1,6 +1,6 @@
 OUTPUT = game-of-life
 SOURCES = *.vala
-OPTIONS = --pkg gtk+-3.0
+OPTIONS = --pkg gtk+-3.0 --pkg posix
 
 all: $(OUTPUT) run
 

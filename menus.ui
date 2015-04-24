@@ -1,6 +1,13 @@
 <?xml version="1.0"?>
 <interface>
     <menu id="appmenu">
+      	<section>
+      	    <item>
+      	    	<attribute name="label" translatable="yes">Mostrar gráfica</attribute>
+                <attribute name="action">app.graphic</attribute>
+                <attribute name="accel">&lt;Primary&gt;G</attribute>
+      	    </item>
+      	</section>
         <section>
             <item>
                 <attribute name="label" translatable="yes">Acerca de</attribute>

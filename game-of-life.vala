@@ -1,9 +1,15 @@
 using Gtk;
 
+/**
+ * @brief [brief description]
+ *
+ * @author Ian Hernández <ihernandezs@openmailbox.org>
+ */
 public class GameOfLife : Gtk.Application {
 	private GOLWindow ventana;
 
 	private const GLib.ActionEntry[] app_entries = {
+		{ "graphic", graphic_cb, null, null, null },
         { "about", about_cb, null, null, null },
         { "quit", quit_cb, null, null, null },
     };
@@ -33,30 +39,44 @@ public class GameOfLife : Gtk.Application {
 	protected override void activate() {
 		base.activate();
 		ventana.present();
+		Posix.system("clear");
 	}
 
 	protected override void shutdown() {
 		base.shutdown();
 	}
+	
+	private void graphic_cb() {
+		ventana.dialog.show_all();
+	}
 
 	private void about_cb() {
-		string[] authors = { "Ian Hernández <ianyo27@gmail.com>" };
+		string[] authors = { "Ian Hernández <ihernandezs@openmailbox.org>" };
 
         string[] documenters = { "Ian Hernández" };
 
-        string comments = "Implementación en Vala y GTK+ del autómata celular ";
+        string comments = "Implementación en Vala y GTK+ del\nautómata celular ";
         comments += "\"Game of Life\".";
+
+        string license = null;
+        try {
+        	FileUtils.get_contents("./LICENSE_HEADER", out license);
+        } catch (Error e) {
+        	stderr.printf("Error: %s\n", e.message);
+        }
 
         Gtk.show_about_dialog(ventana,
 			"program-name", ("Game of Life"),
-			"title","About Game of Life",
-			"copyright", ("\xc2\xa9 2015 Ian Hernández"),
+			"title","Acerca de Game of Life",
+			"copyright", ("Copyright \xc2\xa9 2015 Ian Hernández"),
 			"comments",(comments),
-			"license-type", Gtk.License.GPL_2_0,
+			"website","https://github.com/BadWolfie/Game-of-life",
+			"website_label","Página web",
+			"license",license,
 			"logo-icon-name", "chrome-app-list",
 			"documenters", documenters,
 			"authors", authors,
-			"version", "1.0"
+			"version", "1.2.0"
 		);
 	}
 

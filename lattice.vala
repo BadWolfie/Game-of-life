@@ -1,29 +1,26 @@
 using Gtk;
 
-struct LatticeThread {
-	Cell[,] cells;
-	int begin_x;
-	int begin_y;
-
-	LatticeThread(Cell[,] cells,int begin_x, int begin_y) {
-		this.begin_x = begin_x;
-		this.begin_y = begin_y;
-		this.cells = cells;
-	}
-
-	// Cell[,] run() {
-	// 	 return null;
-	// }
-}
-
+/**
+ *
+ * @brief [brief description]
+ *
+ * @author Ian Hernández <ihernandezs@openmailbox.org>
+ */
 public class Lattice : DrawingArea {
-	public const int LATTICE_SIZE = 20;
-	// private LatticeThread[4] threads;
-	private int chance;
+	public const int LATTICE_SIZE = 550;
+	private int total_size = LATTICE_SIZE * LATTICE_SIZE;
+	
 	private int born_min;
 	private int born_max;
 	private int surv_min;
 	private int surv_max;
+
+	private int chance;
+	private double _density;
+	public double density {
+		get { return _density; }
+		set { _density = value; }
+	}
 
 	private Cell[,] _cells;
 	public Cell[,] cells {
@@ -35,20 +32,12 @@ public class Lattice : DrawingArea {
 		get { return _cells_new; }
 	}
 
-	public Lattice(int born_min, 
-				   int born_max, 
-				   int surv_min, 
-				   int surv_max,
-				   int chance) {
+	public Lattice(int chance) {
 		Object();
 		set_size_request(LATTICE_SIZE,LATTICE_SIZE);
 		draw.connect(paint_grid);
 
 		this.chance = chance;
-		this.born_min = born_min;
-		this.born_max = born_max;
-		this.surv_min = surv_min;
-		this.surv_max = surv_max;
 
 		create_components();
 	}
@@ -63,28 +52,36 @@ public class Lattice : DrawingArea {
 				_cells_new[i,j] = new Cell.from_Cell(_cells[i,j]);
 			}
 		}
-
-		// for (int i = 0; i < 4; i++) {
-		// 	threads[i] = LatticeThread(_cells,0,0);
-		// }
 	}
 
 	private bool paint_grid(Cairo.Context context) {
+		int alive = 0;
+
 		for (int i = 0; i < LATTICE_SIZE; i++) {
 			for (int j = 0; j < LATTICE_SIZE; j++) {
-				if (_cells[i,j].state == CellState.ALIVE)
-					context.set_source_rgba(255,255,255,1);
-				else
-					context.set_source_rgba(0,0,0,1);
-				context.rectangle(j*30,i*30,30,30);
+				if (_cells[i,j].state == CellState.ALIVE) {
+					context.set_source_rgba(1,1,1,1);
+					alive++;
+				} else {
+					context.set_source_rgba(0.08,0.08,0.08,1);
+				}
+
+				context.rectangle(j,i,1,1);
 				context.fill();
 			}
 		}
 
+		_density = ((double) alive / (double) total_size) * 100;
 		return true;
 	}
 
-	public void do_iteration() {
+	public void do_iteration(int born_min, int born_max, 
+							 int surv_min, int surv_max) {
+		this.born_min = born_min;
+		this.born_max = born_max;
+		this.surv_min = surv_min;
+		this.surv_max = surv_max;
+		
 		for (int i = 0; i < LATTICE_SIZE; i++) {
 			for (int j = 0; j < LATTICE_SIZE; j++) {
 				int alive = count_alive(i,j);
@@ -97,15 +94,6 @@ public class Lattice : DrawingArea {
 				_cells[i,j].state = _cells_new[i,j].state;
 			}
 		}
-
-		// try {
-		// 	Thread<Cell[,]>[4] t;
-		// 	for (int i = 0; i < 4; i++)
-		// 		t[i] = new Thread<Cell[,]>.try("",threads[i].run);
-		// 	Cell[,] aux = t.join();
-		// } catch (Error e) {
-		// 	stdout.printf("Error: %s\n",e.message);
-		// }
 	}
 
 	private int count_alive(int x, int y) {
